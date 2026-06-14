@@ -170,7 +170,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
   // ─── Mutations ───────────────────────────────────────────────────
 
   const updateSettings = async (logo: string | null, name: string, address: string): Promise<boolean> => {
-    const { error } = await supabase.from('app_settings').upsert({ id: '1', systemLogo: logo, companyName: name, companyAddress: address });
+    const { data: existing } = await supabase.from('app_settings').select('id').limit(1).single();
+    const settingsId = existing?.id || Date.now().toString();
+    const record = withUserId({ id: settingsId, systemLogo: logo, companyName: name, companyAddress: address });
+    const { error } = await supabase.from('app_settings').upsert(record);
     if (!handleDbError('simpan settings', error)) return false;
     setSystemLogo(logo); setCompanyName(name); setCompanyAddress(address);
     return true;
