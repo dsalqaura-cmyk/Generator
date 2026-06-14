@@ -395,7 +395,7 @@ export default function CreateQuotationPage() {
                     value={item.quantity}
                     onChange={(e) => updateItem(item.id, 'quantity', parseFloat(e.target.value) || 0)}
                     disabled={!!item.sowId} // Disabled if linked to SOW
-                    title={!!item.sowId ? "Auto-calculated from SOW duration" : ""}
+                    title={item.sowId ? "Auto-calculated from SOW duration" : ""}
                   />
                   <input 
                     type="number" 

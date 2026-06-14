@@ -29,11 +29,11 @@ export default function CalculateProfitSharingPage() {
     if (!sch || !term) return;
 
     // 1. Get Revenue Base from the specific Term!
-    let revenueBase = term.amount;
+    const revenueBase = term.amount;
     
     // 2. Calculate Deductions based on user input
     // The user requested to be able to input this manually for the specific term
-    let deductions = manualExpense;
+    const deductions = manualExpense;
     
     // 3. Final Distributable Amount
     let finalDistributable = revenueBase;

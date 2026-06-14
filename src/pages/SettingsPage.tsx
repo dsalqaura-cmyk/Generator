@@ -12,6 +12,7 @@ export default function SettingsPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Sync state if context changes externally
+   
   useEffect(() => {
     setLogoBase64(systemLogo);
     setName(companyName);

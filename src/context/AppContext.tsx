@@ -66,6 +66,25 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [schemes, setSchemes] = useState<Scheme[]>([]);
   const [distributions, setDistributions] = useState<DistributionRecord[]>([]);
 
+  const fetchUserRole = async (userId: string, email: string) => {
+    try {
+      if (email === 'superadmin@salqaura.com') {
+        setUser({ id: userId, email, role: 'superadmin' });
+        fetchData();
+        return;
+      }
+
+      const { data } = await supabase.from('user_roles').select('role').eq('id', userId).single();
+      const role = data?.role || 'company';
+      setUser({ id: userId, email, role });
+      fetchData();
+    } catch (error) {
+      console.error("Error fetching user role", error);
+      setUser({ id: userId, email, role: 'company' });
+      fetchData();
+    }
+  };
+
   // Auth Listener
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -87,25 +106,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     return () => subscription.unsubscribe();
   }, []);
-
-  const fetchUserRole = async (userId: string, email: string) => {
-    try {
-      if (email === 'superadmin@salqaura.com') {
-        setUser({ id: userId, email, role: 'superadmin' });
-        fetchData();
-        return;
-      }
-
-      const { data } = await supabase.from('user_roles').select('role').eq('id', userId).single();
-      const role = data?.role || 'company';
-      setUser({ id: userId, email, role });
-      fetchData();
-    } catch (error) {
-      console.error("Error fetching user role", error);
-      setUser({ id: userId, email, role: 'company' });
-      fetchData();
-    }
-  };
 
   const logout = async () => {
     await supabase.auth.signOut();
@@ -374,6 +374,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useApp = () => {
   const context = useContext(AppContext);
   if (context === undefined) throw new Error("useApp must be used within an AppProvider");
